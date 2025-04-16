@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SESI - Dashboard Escolar</title>
+  <meta name="description" content="Dashboard para visualização de dados escolares - SESI" />
+  <link rel="stylesheet" href="./styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+  <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+</head>
+
+<body>
+  <div id="app">
+    <!-- Login Page -->
+    <div id="login-page" class="page">
+      <div class="login-container">
+        <div class="logo-container">
+          <h1>SESI</h1>
+          <p>Sistema de Análise de Desempenho Escolar</p>
+        </div>
+        <div class="login-form">
+          <h2>Login</h2>
+          <form id="auth-form">
+            <div class="form-group">
+              <label for="username">Usuário:</label>
+              <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+              <label for="password">Senha:</label>
+              <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn-primary">Entrar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard-page" class="page hidden">
+      <header>
+        <div class="logo">
+          <h1>SESI</h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="#" class="active" data-view="overview">Visão Geral</a></li>
+            <li><a href="#" data-view="students">Alunos</a></li>
+            <li><a href="#" data-view="classes">Turmas</a></li>
+            <li><a href="#" data-view="subjects">Disciplinas</a></li>
+          </ul>
+        </nav>
+        <div class="user-info">
+          <span id="user-name">Professor</span>
+          <button id="logout-btn" class="btn-secondary">Sair</button>
+        </div>
+      </header>
+
+      <main>
+        <div class="sidebar">
+          <div class="file-upload">
+            <h3>Importar Dados</h3>
+            <div class="upload-container">
+              <label for="file-upload" class="file-label">
+                Selecionar Planilha
+                <input type="file" id="file-upload" accept=".xlsx, .xls" hidden>
+              </label>
+              <p id="file-name">Nenhum arquivo selecionado</p>
+            </div>
+            <button id="upload-btn" class="btn-primary" disabled>Carregar Dados</button>
+          </div>
+
+          <div class="filters">
+            <h3>Filtros</h3>
+            <div class="filter-group">
+              <label for="year-filter">Ano Letivo:</label>
+              <select id="year-filter">
+                <option value="">Todos</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="class-filter">Turma:</label>
+              <select id="class-filter">
+                <option value="">Todas</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="subject-filter">Disciplina:</label>
+              <select id="subject-filter">
+                <option value="">Todas</option>
+              </select>
+            </div>
+            <button id="apply-filters" class="btn-primary">Aplicar Filtros</button>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="stats-cards">
+            <div class="stat-card">
+              <h3>Total de Alunos</h3>
+              <p id="total-students">--</p>
+            </div>
+            <div class="stat-card">
+              <h3>Média Geral</h3>
+              <p id="average-grade">--</p>
+            </div>
+            <div class="stat-card">
+              <h3>Aprovação</h3>
+              <p id="approval-rate">--</p>
+            </div>
+            <div class="stat-card">
+              <h3>Disciplina Crítica</h3>
+              <p id="critical-subject">--</p>
+            </div>
+          </div>
+
+          <div class="charts-container">
+            <div class="chart-card">
+              <h3>Desempenho por Disciplina</h3>
+              <div class="chart-wrapper">
+                <canvas id="subjects-chart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3>Evolução de Notas</h3>
+              <div class="chart-wrapper">
+                <canvas id="evolution-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="data-table-container">
+            <h3>Dados Detalhados</h3>
+            <div class="table-controls">
+              <input type="text" id="search-input" placeholder="Buscar aluno...">
+              <div class="table-pagination">
+                <button id="prev-page">&lt;</button>
+                <span id="page-info">Página 1 de 1</span>
+                <button id="next-page">&gt;</button>
+              </div>
+            </div>
+            <div class="table-wrapper">
+              <table id="data-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Turma</th>
+                    <th>Disciplina</th>
+                    <th>Nota</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="5" class="no-data">Nenhum dado disponível. Importe uma planilha.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <div id="toast" class="toast hidden">
+        <p id="toast-message"></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./script.js" defer></script>
+</body>
+
+</html>
